@@ -1,24 +1,23 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
+import { ReactNode } from 'react';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^@/components/(.*)$': '<rootDir>/components/$1', // Optional path alias
-  },
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
-  collectCoverage: true,
-  collectCoverageFrom: [
-    '**/*.{ts,tsx}',
-    '!**/node_modules/**',
-    '!**/.next/**',
-    '!**/out/**',
-    '!**/pages/_app.tsx',
-    '!**/pages/_document.tsx',
-    '!**/types/**',
-    '!**/*.d.ts',
-  ],
-  coverageReporters: ['text', 'lcov', 'html'],
+const queryClient = new QueryClient();
+
+const AllTheProviders = ({ children }: { children: ReactNode }) => {
+  return (
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </Provider>
+  );
 };
+
+const customRender = (ui: React.ReactElement, options = {}) =>
+  render(ui, { wrapper: AllTheProviders, ...options });
+
+export * from '@testing-library/react';
+export { customRender as render };
