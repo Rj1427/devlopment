@@ -1,38 +1,38 @@
-import reducer, {
-  increment,
-  decrement,
-  incrementByAmount,
-  incrementAsync,
-} from '../features/counter/counterSlice';
+import axios from 'axios';
+import { getUser, createUser } from '../api/user';
 
-describe('counter slice', () => {
-  const initialState = { value: 0, status: 'idle' };
+jest.mock('axios'); // Mock axios
 
-  it('should handle initial state', () => {
-    expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
+describe('User API', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should handle increment', () => {
-    const actual = reducer(initialState, increment());
-    expect(actual.value).toEqual(1);
+  it('should fetch a user by ID', async () => {
+    const user = { id: 1, name: 'John Doe' };
+    axios.get.mockResolvedValue({ data: user });
+
+    const result = await getUser(1);
+    expect(result).toEqual(user);
+    expect(axios.get).toHaveBeenCalledWith('/api/users/1');
   });
 
-  it('should handle decrement', () => {
-    const actual = reducer({ value: 1, status: 'idle' }, decrement());
-    expect(actual.value).toEqual(0);
+  it('should create a new user', async () => {
+    const newUser = { name: 'Jane Doe' };
+    const createdUser = { id: 2, ...newUser };
+    axios.post.mockResolvedValue({ data: createdUser });
+
+    const result = await createUser(newUser);
+    expect(result).toEqual(createdUser);
+    expect(axios.post).toHaveBeenCalledWith('/api/users', newUser);
   });
 
-  it('should handle incrementByAmount', () => {
-    const actual = reducer(initialState, incrementByAmount(5));
-    expect(actual.value).toEqual(5);
-  });
+  it('should handle getUser error', async () => {
+    axios.get.mockRejectedValue(new Error('User not found'));
 
-  it('should handle incrementAsync (fulfilled)', () => {
-    const pendingState = reducer(initialState, incrementAsync.pending());
-    expect(pendingState.status).toEqual('loading');
-
-    const fulfilledState = reducer(initialState, incrementAsync.fulfilled(3));
-    expect(fulfilledState.status).toEqual('idle');
-    expect(fulfilledState.value).toEqual(3);
+    await expect(getUser(999)).rejects.toThrow('User not found');
+    expect(axios.get).toHaveBeenCalledWith('/api/users/999');
   });
 });
+
+  
