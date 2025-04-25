@@ -1,0 +1,60 @@
+{
+  "templateId": "1",
+  "flavorId": "a",
+  "rootTemplate": [
+    {
+      "parentName": "Planning",
+      "childMilestones": [
+        { "name": "Requirement Gathering", "status": "exists" },
+        { "name": "Timeline Estimation", "status": "not_found" }
+      ]
+    }
+  ],
+  "flavorTemplate": [
+    {
+      "parentName": "Execution",
+      "childMilestones": [
+        { "name": "Unit Testing", "status": "exists" },
+        { "name": "Integration Testing", "status": "not_found" }
+      ]
+    }
+  ]
+},
+
+
+{
+  "1": {
+    "root": [
+      {
+        "parentName": "Planning",
+        "childMilestones": [
+          { "name": "Requirement Gathering" },
+          { "name": "Timeline Estimation" }
+        ]
+      },
+      {
+        "parentName": "Execution",
+        "childMilestones": [
+          { "name": "Development" },
+          { "name": "Code Review" }
+        ]
+      }
+    ],
+    "a": [
+      {
+        "parentName": "Execution",
+        "childMilestones": [
+          { "name": "Unit Testing" },
+          { "name": "Integration Testing" }
+        ]
+      },
+      {
+        "parentName": "Deployment",
+        "childMilestones": [
+          { "name": "Staging" },
+          { "name": "Production" }
+        ]
+      }
+    ]
+  }
+}
